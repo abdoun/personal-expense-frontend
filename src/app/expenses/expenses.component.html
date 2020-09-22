@@ -1,0 +1,98 @@
+<h3>Browse Expenses</h3>
+
+<nav aria-label="">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" routerLink="/expenses/{{pageNo -1 > -1 ? pageNo -1 : 0 }}">Previous</a>
+    </li>
+    <li class="page-item" *ngFor="let item of [].constructor(pages); let i = index">
+      <a class="page-link" routerLink="/expenses/{{i}}">{{i+1}}</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" routerLink="/expenses/{{(pageNo + 1) * pageResults >= count ? pageNo : pageNo + 1}}">Next</a>
+    </li>
+  </ul>
+</nav>
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Count: {{count}} <button (click)="addExpense()" class="btn btn-primary" data-toggle="modal" data-target="#ModalEdit">+</button></th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Date and Time</th>
+        <th scope="col">Notes</th>
+        <th scope="col">Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let expense of expenses">
+        <th scope="row">
+          <button (click)="editExpense(expense.id)" class="btn btn-primary mr-1" data-toggle="modal" data-target="#ModalEdit">Edit</button>
+          <button (click)="deleteExpense(expense.id)" id="deleteButton-{{expense.id}}" class="btn btn-primary">Delete</button>
+        </th>
+        <td><span [ngClass]="expense.qty < 0 ? 'badge badge-danger' : 'badge badge-success'">{{ expense.qty }}</span></td>
+        <td>{{ expense.date_time }}</td>
+        <td>{{ expense.notes }}</td>
+        <td>{{ expense.category }}
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+  
+  
+  <!-- Modal -->
+<div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-toped" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLongTitle">Edit/Add Expense</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body-edit">
+        <div id="loading">...</div>
+        <div [ngClass] = "msg !='' ? 'alert alert-danger' : '' ">{{msg}}</div>
+        <form [formGroup]="editExpenseForm" (ngSubmit)="onSubmit()" class="form-horizontal">
+          <div class="form-group row">
+            <label for="qty" class="col-sm-3 control-label">Quantity:</label>
+            <div class="col-sm-9 col-md-6">
+              <input type="number" class="form-control" formControlName="qty" placeholder="Quantity" min="-10000" max="10000" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="date_time" class="col-sm-3 control-label">Date:</label>
+            <div class="col-sm-9 col-md-6">
+              <input type="datetime-local" class="form-control" formControlName="date_time" placeholder="Date and Time" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="category" class="col-sm-3 control-label">Category:</label>
+            <div class="col-sm-9 col-md-6">
+              <select class="form-control" formControlName="category" placeholder="Category" required>
+                <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="notes" class="col-sm-3 control-label">Notes:</label>
+            <div class="col-sm-9 col-md-6">
+                <textarea type="text" class="form-control" formControlName="notes" placeholder="Notes"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-6">
+              <button type="submit" class="btn btn-primary" [disabled]="!editExpenseForm.valid">Update</button>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button (click)='refresh()' type="button" class="btn btn-primary">Close and Refresh</button>
+      </div>
+    </div>
+  </div>
+</div>

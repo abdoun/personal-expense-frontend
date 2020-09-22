@@ -1,0 +1,27 @@
+<h3>Userarea | <a class="btn btn-primary" *ngIf="user" (click)="logout()">Logout</a></h3>
+
+<app-user-detail [user]="user" *ngIf="user"></app-user-detail>
+
+<div [ngClass] = "msg !='' ? 'alert alert-danger' : '' ">{{msg}}</div>
+
+<form [formGroup]="loginform" class="form-horizontal" (ngSubmit)="onSubmit()" *ngIf="!user">
+  <div id="loading"></div>
+    <div class="form-group row">
+      <label for="username" class="col-sm-3 control-label">Username:</label>
+      <div class="col-sm-9 col-md-6">
+        <input type="text" class="form-control" formControlName="username" placeholder="Username" required>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="password" class="col-sm-3 control-label">Password:</label>
+      <div class="col-sm-9 col-md-6">
+          <input type="password" class="form-control" formControlName="password" placeholder="Password" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-3 col-sm-6">
+        <button type="submit" class="btn btn-primary" [disabled]="!loginform.valid">Login</button>
+      </div>
+    </div>
+    
+  </form>
